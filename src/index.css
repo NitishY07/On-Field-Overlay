@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --color-brand-blue: #00d2ff;
+  --color-brand-red: #ff003c;
+  --color-brand-gold: #ffb700;
+  --color-brand-dark: #0a0a0f;
+}
+
+@utility glass-panel {
+  background-color: rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
+}
+
+@utility text-glow-blue {
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.8), 0 0 20px rgba(0, 210, 255, 0.4);
+}
+
+@utility text-glow-red {
+  text-shadow: 0 0 10px rgba(255, 0, 60, 0.8), 0 0 20px rgba(255, 0, 60, 0.4);
+}
+
+@utility text-glow-white {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: transparent; /* allow alpha rendering in OBS */
+}
+
+/* Ensure the canvas fills the screen */
+#root, canvas {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
