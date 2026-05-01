@@ -34,16 +34,16 @@ export function FieldOverlay() {
              }}>
           
           {/* LOGO ROW: Flex with massive gap to ensure perfect separation */}
-          <div className="flex items-center justify-center gap-[800px] w-full">
+          <div className="flex items-center justify-center gap-[800px] w-auto min-w-max">
             {/* Home Team Logo */}
-            <div className="w-[500px] h-[500px] flex items-center justify-center">
+            <div className="w-[650px] h-[650px] flex-shrink-0 flex items-center justify-center">
               <img src={config.teamA.logo} 
                    alt={config.teamA.name} 
                    className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
             </div>
 
             {/* Tournament Logo Center */}
-            <div className="w-[700px] h-auto flex items-center justify-center">
+            <div className="w-[750px] h-auto flex-shrink-0 flex items-center justify-center">
               {config.centerLogo && (
                 <img src={config.centerLogo} 
                      alt="Tournament" 
@@ -52,7 +52,7 @@ export function FieldOverlay() {
             </div>
 
             {/* Away Team Logo */}
-            <div className="w-[500px] h-[500px] flex items-center justify-center">
+            <div className="w-[650px] h-[650px] flex-shrink-0 flex items-center justify-center">
               <img src={config.teamB.logo} 
                    alt={config.teamB.name} 
                    className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
