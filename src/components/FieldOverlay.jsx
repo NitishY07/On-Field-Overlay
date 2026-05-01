@@ -27,36 +27,33 @@ export function FieldOverlay() {
 
       {/* 3D BASE OFFSET */}
       {config.showGrassLogos !== false && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        <div className="absolute inset-0 pointer-events-none"
              style={{ 
                transform: `rotateX(62deg) translateY(${config.logoYOffset || -350}px)`,
                transformStyle: 'preserve-3d'
              }}>
           
-          {/* LOGO ROW: Flex with massive gap to ensure perfect separation */}
-          <div className="flex items-center justify-center gap-[800px] w-auto min-w-max">
-            {/* Home Team Logo */}
-            <div className="w-[650px] h-[650px] flex-shrink-0 flex items-center justify-center">
-              <img src={config.teamA.logo} 
-                   alt={config.teamA.name} 
-                   className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
-            </div>
+          {/* Home Team Logo - Left Side */}
+          <div className="absolute left-[20%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[22vw] aspect-square flex items-center justify-center">
+            <img src={config.teamA.logo} 
+                 alt={config.teamA.name} 
+                 className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+          </div>
 
-            {/* Tournament Logo Center */}
-            <div className="w-[750px] h-auto flex-shrink-0 flex items-center justify-center">
-              {config.centerLogo && (
-                <img src={config.centerLogo} 
-                     alt="Tournament" 
-                     className="w-full h-auto object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
-              )}
-            </div>
+          {/* Tournament Logo - Center */}
+          <div className="absolute left-[50%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[28vw] aspect-square flex items-center justify-center">
+            {config.centerLogo && (
+              <img src={config.centerLogo} 
+                   alt="Tournament" 
+                   className="w-full h-auto object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+            )}
+          </div>
 
-            {/* Away Team Logo */}
-            <div className="w-[650px] h-[650px] flex-shrink-0 flex items-center justify-center">
-              <img src={config.teamB.logo} 
-                   alt={config.teamB.name} 
-                   className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
-            </div>
+          {/* Away Team Logo - Right Side */}
+          <div className="absolute left-[80%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[22vw] aspect-square flex items-center justify-center">
+            <img src={config.teamB.logo} 
+                 alt={config.teamB.name} 
+                 className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
           </div>
         </div>
       )}
