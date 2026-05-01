@@ -5,7 +5,8 @@ import { matchConfig as defaultConfig } from '../config'
 export function AdminPanel() {
   const [config, setConfig] = useState(() => {
     const saved = localStorage.getItem('matchConfig')
-    return saved ? JSON.parse(saved) : defaultConfig
+    const parsed = saved ? JSON.parse(saved) : {}
+    return { ...defaultConfig, ...parsed }
   })
 
   const channelRef = useRef(null)
@@ -21,10 +22,13 @@ export function AdminPanel() {
     }
   }, [])
 
-  const handleChange = (section, field, value) => {
+  const handleChange = (section, field, value, index = null) => {
     setConfig(prev => {
       const newConfig = { ...prev }
-      if (section) {
+      if (index !== null && section === 'brandingLogos') {
+        newConfig.brandingLogos = [...newConfig.brandingLogos]
+        newConfig.brandingLogos[index] = { ...newConfig.brandingLogos[index], [field]: value }
+      } else if (section) {
         newConfig[section] = { ...newConfig[section], [field]: value }
       } else {
         newConfig[field] = value
@@ -55,227 +59,173 @@ export function AdminPanel() {
     }
   }
 
-  const handleFileUpload = (section, field, file) => {
+  const handleFileUpload = (section, field, file, index = null) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        handleChange(section, field, reader.result);
+        handleChange(section, field, reader.result, index);
       };
       reader.readAsDataURL(file);
     }
   }
 
+  const LogoInput = ({ label, value, onTextChange, onFileChange, placeholder = "URL or data..." }) => (
+    <div className="w-full">
+      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-wider">{label}</label>
+      <div className="flex flex-col gap-1.5">
+        <input 
+          type="text" 
+          value={value} 
+          onChange={(e) => onTextChange(e.target.value)}
+          className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none text-[11px]"
+          placeholder={placeholder}
+        />
+        <div className="flex items-center gap-2">
+          <input 
+            type="file" 
+            accept="image/*"
+            onChange={(e) => onFileChange(e.target.files[0])}
+            className="text-[10px] text-gray-400 cursor-pointer file:bg-white/5 file:text-white file:border-none file:rounded file:px-2 file:py-1 file:mr-2 hover:file:bg-white/10 transition-all"
+          />
+        </div>
+      </div>
+    </div>
+  )
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white p-8 font-inter overflow-auto">
-      <div className="max-w-5xl mx-auto">
-        <header className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+    <div className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8 font-inter">
+      <div className="max-w-[1400px] mx-auto">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-white/10 pb-8">
           <div>
-            <h1 className="text-3xl font-orbitron font-bold text-brand-blue tracking-wider">GRAPHICS CONTROL PANEL</h1>
-            <p className="text-gray-400 mt-2 text-sm">Real-time settings sync for 3D Broadcast Graphics</p>
+            <h1 className="text-3xl md:text-4xl font-orbitron font-bold text-brand-blue tracking-tighter">FIELD GRAPHICS CONTROLLER</h1>
+            <p className="text-gray-500 mt-1 text-sm font-medium">Professional 3D Broadcast Overlay System</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-3 w-full md:w-auto">
             <button 
               onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-md text-sm font-semibold transition-colors"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-bold transition-all border border-white/5"
             >
               <RefreshCw className="w-4 h-4" /> Reset
             </button>
             <button 
               onClick={handleSave}
-              className="flex items-center gap-2 px-6 py-2 bg-brand-blue hover:bg-blue-400 text-black rounded-md text-sm font-bold shadow-[0_0_15px_rgba(0,210,255,0.4)] transition-all"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-brand-blue hover:bg-blue-400 text-black rounded-lg text-sm font-black shadow-[0_0_20px_rgba(0,210,255,0.3)] transition-all"
             >
-              <Save className="w-4 h-4" /> Push Updates to Live
+              <Save className="w-4 h-4" /> PUSH LIVE
             </button>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Team A Settings */}
+        <div className="grid grid-cols-1 gap-8 mb-8">
+          {/* FIELD LOGOS SECTION */}
           <div className="glass-panel p-6 rounded-xl border border-white/5">
-            <h2 className="text-xl font-orbitron font-bold mb-4 text-white border-l-4 border-brand-blue pl-3">HOME TEAM (LEFT)</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Full Name</label>
-                <input 
-                  type="text" 
-                  value={config.teamA.name} 
-                  onChange={(e) => handleChange('teamA', 'name', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none"
-                />
+            <h2 className="text-xl font-orbitron font-bold mb-6 text-white border-l-4 border-brand-blue pl-3 uppercase">Field Logos (Team & Tournament)</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <LogoInput 
+                label="Home Team Logo (Left)"
+                value={config.teamA.logo}
+                onTextChange={(val) => handleChange('teamA', 'logo', val)}
+                onFileChange={(file) => handleFileUpload('teamA', 'logo', file)}
+              />
+              <LogoInput 
+                label="Tournament Center Logo"
+                value={config.centerLogo}
+                onTextChange={(val) => handleChange(null, 'centerLogo', val)}
+                onFileChange={(file) => handleFileUpload(null, 'centerLogo', file)}
+              />
+              <LogoInput 
+                label="Away Team Logo (Right)"
+                value={config.teamB.logo}
+                onTextChange={(val) => handleChange('teamB', 'logo', val)}
+                onFileChange={(file) => handleFileUpload('teamB', 'logo', file)}
+              />
+            </div>
+          </div>
+
+          {/* SPONSOR BRANDING SECTION */}
+          <div className="glass-panel p-6 rounded-xl border border-white/5">
+            <h2 className="text-xl font-orbitron font-bold mb-6 text-white border-l-4 border-green-500 pl-3 uppercase">Sponsor Branding & Slogan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs text-gray-400 mb-2 uppercase font-bold tracking-wider">On-Field Slogan Text</label>
+                  <input 
+                    type="text" 
+                    value={config.brandingText} 
+                    onChange={(e) => handleChange(null, 'brandingText', e.target.value)}
+                    className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-blue focus:outline-none uppercase text-lg font-bold"
+                    placeholder="e.g. WHERE CHAMPIONS ARE CROWNED"
+                  />
+                </div>
+                <div className="p-4 bg-blue-900/20 rounded border border-blue-500/30">
+                  <p className="text-xs text-blue-300">
+                    <strong>Note:</strong> These graphics are rendered in 3D on the field. Use the sliders below to adjust their depth.
+                  </p>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Abbreviation (3 Letters)</label>
-                  <input 
-                    type="text" 
-                    maxLength={4}
-                    value={config.teamA.shortName} 
-                    onChange={(e) => handleChange('teamA', 'shortName', e.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none font-orbitron uppercase"
+                {config.brandingLogos?.map((brand, idx) => (
+                  <LogoInput 
+                    key={idx}
+                    label={`Brand Logo ${idx + 1}`}
+                    value={brand.url}
+                    onTextChange={(val) => handleChange('brandingLogos', 'url', val, idx)}
+                    onFileChange={(file) => handleFileUpload('brandingLogos', 'url', file, idx)}
                   />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Primary Color (Hex)</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="color" 
-                      value={config.teamA.color} 
-                      onChange={(e) => handleChange('teamA', 'color', e.target.value)}
-                      className="w-10 h-10 rounded cursor-pointer bg-black/50 border border-white/10 p-1"
-                    />
-                    <input 
-                      type="text" 
-                      value={config.teamA.color} 
-                      onChange={(e) => handleChange('teamA', 'color', e.target.value)}
-                      className="flex-1 bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Logo URL (Or Upload Image)</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={config.teamA.logo} 
-                    onChange={(e) => handleChange('teamA', 'logo', e.target.value)}
-                    className="flex-1 bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none text-xs"
-                    placeholder="URL or data..."
-                  />
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload('teamA', 'logo', e.target.files[0])}
-                    className="w-24 text-xs bg-black/50 border border-white/10 rounded px-2 py-2 text-white cursor-pointer file:hidden"
-                    title="Upload image"
-                  />
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Team B Settings */}
+          {/* POSITIONING CONTROLS */}
           <div className="glass-panel p-6 rounded-xl border border-white/5">
-            <h2 className="text-xl font-orbitron font-bold mb-4 text-white border-l-4 border-brand-red pl-3">AWAY TEAM (RIGHT)</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Full Name</label>
+            <h2 className="text-xl font-orbitron font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3 uppercase">3D Depth & Positioning</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-bold text-white/80 uppercase">Team/Center Logos Depth</label>
+                  <span className="text-xs bg-brand-blue/20 text-brand-blue px-3 py-1 rounded-full font-bold">{config.logoYOffset}px</span>
+                </div>
                 <input 
-                  type="text" 
-                  value={config.teamB.name} 
-                  onChange={(e) => handleChange('teamB', 'name', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none"
+                  type="range" 
+                  min="-1200" 
+                  max="500" 
+                  step="5"
+                  value={config.logoYOffset || -400} 
+                  onChange={(e) => handleChange(null, 'logoYOffset', parseInt(e.target.value))}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-blue"
                 />
+                <p className="text-[10px] text-gray-500 italic">Adjust horizontal line on the field where main logos appear.</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Abbreviation (3 Letters)</label>
-                  <input 
-                    type="text" 
-                    maxLength={4}
-                    value={config.teamB.shortName} 
-                    onChange={(e) => handleChange('teamB', 'shortName', e.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none font-orbitron uppercase"
-                  />
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-bold text-white/80 uppercase">Sponsor/Slogan Depth</label>
+                  <span className="text-xs bg-brand-blue/20 text-brand-blue px-3 py-1 rounded-full font-bold">{config.sponsorYOffset}px</span>
                 </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Primary Color (Hex)</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="color" 
-                      value={config.teamB.color} 
-                      onChange={(e) => handleChange('teamB', 'color', e.target.value)}
-                      className="w-10 h-10 rounded cursor-pointer bg-black/50 border border-white/10 p-1"
-                    />
-                    <input 
-                      type="text" 
-                      value={config.teamB.color} 
-                      onChange={(e) => handleChange('teamB', 'color', e.target.value)}
-                      className="flex-1 bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Logo URL (Or Upload Image)</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={config.teamB.logo} 
-                    onChange={(e) => handleChange('teamB', 'logo', e.target.value)}
-                    className="flex-1 bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none text-xs"
-                    placeholder="URL or data..."
-                  />
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload('teamB', 'logo', e.target.files[0])}
-                    className="w-24 text-xs bg-black/50 border border-white/10 rounded px-2 py-2 text-white cursor-pointer file:hidden"
-                    title="Upload image"
-                  />
-                </div>
+                <input 
+                  type="range" 
+                  min="-500" 
+                  max="1500" 
+                  step="5"
+                  value={config.sponsorYOffset || 450} 
+                  onChange={(e) => handleChange(null, 'sponsorYOffset', parseInt(e.target.value))}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-blue"
+                />
+                <p className="text-[10px] text-gray-500 italic">Adjust horizontal line on the field for branding elements.</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Match Settings & Trigger */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 glass-panel p-6 rounded-xl border border-white/5">
-            <h2 className="text-xl font-orbitron font-bold mb-4 text-white border-l-4 border-yellow-500 pl-3">MATCH INFO</h2>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Tournament Name</label>
-                <input 
-                  type="text" 
-                  value={config.tournament} 
-                  onChange={(e) => handleChange(null, 'tournament', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none uppercase"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Event Center Logo URL</label>
-                <input 
-                  type="text" 
-                  value={config.eventLogo} 
-                  onChange={(e) => handleChange(null, 'eventLogo', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Date String</label>
-                <input 
-                  type="text" 
-                  value={config.date} 
-                  onChange={(e) => handleChange(null, 'date', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none uppercase"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Stadium / Location</label>
-                <input 
-                  type="text" 
-                  value={config.location} 
-                  onChange={(e) => handleChange(null, 'location', e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-brand-blue focus:outline-none uppercase"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl border border-white/5 flex flex-col justify-center items-center text-center">
-            <h2 className="text-lg text-gray-400 mb-4 font-bold tracking-widest">LIVE BROADCAST CONTROLS</h2>
-            <button 
-              onClick={handlePlay}
-              className="w-full py-6 bg-gradient-to-r from-brand-red to-[#b3002a] hover:from-[#ff3366] hover:to-[#e60036] text-white rounded-xl shadow-[0_0_30px_rgba(255,0,60,0.4)] hover:shadow-[0_0_40px_rgba(255,0,60,0.6)] flex flex-col items-center justify-center gap-2 transition-all transform hover:scale-105 active:scale-95 group"
-            >
-              <Play className="w-10 h-10 fill-current" />
-              <span className="font-orbitron font-bold text-xl tracking-widest">PLAY SEQUENCE</span>
-            </button>
-            <p className="text-xs text-gray-500 mt-4">
-              Ensure graphics overlay is active in OBS before playing. This will save settings and trigger the 3D animation instantly.
-            </p>
-          </div>
+        <div className="flex justify-center mt-12 pb-12">
+          <button 
+            onClick={handlePlay}
+            className="flex items-center gap-4 px-12 py-6 bg-gradient-to-r from-brand-red to-[#b3002a] hover:from-[#ff3366] hover:to-[#e60036] text-white rounded-2xl shadow-[0_0_40px_rgba(255,0,60,0.4)] hover:shadow-[0_0_60px_rgba(255,0,60,0.6)] transition-all transform hover:scale-105 active:scale-95 group"
+          >
+            <Play className="w-8 h-8 fill-current" />
+            <span className="font-orbitron font-bold text-2xl tracking-[0.2em]">TRIGGER LIVE SEQUENCE</span>
+          </button>
         </div>
 
       </div>

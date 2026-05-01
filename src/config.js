@@ -22,4 +22,16 @@ export const matchConfig = {
   eventLogo: "/event.svg",
   date: "29 APR 2026",
   location: "SANTIAGO BERNABÉU",
+
+  // Field Branding (Added for the new Overlay)
+  centerLogo: "/event.svg",
+  brandingLogos: [
+    { url: "/scotiabank.svg", name: "Scotiabank" },
+    { url: "/allstate.svg", name: "Allstate" },
+    { url: "/modelo.svg", name: "Modelo" },
+    { url: "/nike.svg", name: "Nike" }
+  ],
+  brandingText: "Where Champions Are Crowned",
+  logoYOffset: -400,
+  sponsorYOffset: 450
 }

@@ -90,7 +90,7 @@ function Scene({ refs, config }) {
       />
 
       <EffectComposer disableNormalPass>
-        <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} />
+        <Bloom luminanceThreshold={1} intensity={1.5} />
       </EffectComposer>
     </>
   )
@@ -214,7 +214,7 @@ function GraphicsOverlay() {
       </div>
 
       {/* Debug/Play Controls */}
-      {!isPlaying && showAdminUI && (
+      {!hasStarted && (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50">
           <button 
             onClick={handlePlay}
@@ -229,15 +229,26 @@ function GraphicsOverlay() {
   )
 }
 
+import { FieldOverlay } from './components/FieldOverlay'
+
 function App() {
-  const [isAdminPath, setIsAdminPath] = useState(false)
+  const [path, setPath] = useState(window.location.pathname)
 
   useEffect(() => {
-    setIsAdminPath(window.location.pathname === '/admin' || window.location.search.includes('admin_panel=true'))
+    const handleLocationChange = () => {
+      setPath(window.location.pathname)
+    }
+    window.addEventListener('popstate', handleLocationChange)
+    return () => window.removeEventListener('popstate', handleLocationChange)
   }, [])
 
-  if (isAdminPath) {
+  // Simple routing logic
+  if (path === '/admin' || window.location.search.includes('admin_panel=true')) {
     return <AdminPanel />
+  }
+
+  if (path === '/field-overlay') {
+    return <FieldOverlay />
   }
 
   return <GraphicsOverlay />
