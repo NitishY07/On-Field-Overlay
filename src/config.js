@@ -33,5 +33,7 @@ export const matchConfig = {
   ],
   brandingText: "Where Champions Are Crowned",
   logoYOffset: -350,
-  sponsorYOffset: 300
+  sponsorYOffset: 300,
+  showGrassLogos: true,
+  showSponsors: false
 }

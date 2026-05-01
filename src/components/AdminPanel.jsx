@@ -177,9 +177,26 @@ export function AdminPanel() {
             </div>
           </div>
 
-          {/* POSITIONING CONTROLS */}
+          {/* POSITIONING & VISIBILITY CONTROLS */}
           <div className="glass-panel p-6 rounded-xl border border-white/5">
-            <h2 className="text-xl font-orbitron font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3 uppercase">3D Depth & Positioning</h2>
+            <h2 className="text-xl font-orbitron font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3 uppercase">3D Depth & Visibility</h2>
+            
+            {/* Visibility Toggles */}
+            <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-white/5">
+              <button 
+                onClick={() => handleChange(null, 'showGrassLogos', !config.showGrassLogos)}
+                className={`py-3 px-4 rounded-lg font-bold text-xs uppercase tracking-widest transition-all ${config.showGrassLogos ? 'bg-green-600 text-white shadow-[0_0_15px_rgba(22,163,74,0.4)]' : 'bg-white/5 text-gray-500'}`}
+              >
+                {config.showGrassLogos ? 'Grass Logos: ON' : 'Grass Logos: OFF'}
+              </button>
+              <button 
+                onClick={() => handleChange(null, 'showSponsors', !config.showSponsors)}
+                className={`py-3 px-4 rounded-lg font-bold text-xs uppercase tracking-widest transition-all ${config.showSponsors ? 'bg-green-600 text-white shadow-[0_0_15px_rgba(22,163,74,0.4)]' : 'bg-white/5 text-gray-500'}`}
+              >
+                {config.showSponsors ? 'Sponsors: ON' : 'Sponsors: OFF'}
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
