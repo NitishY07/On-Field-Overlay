@@ -26,33 +26,36 @@ export function FieldOverlay() {
       <div className="absolute top-4 right-4 text-white/10 text-[10px]">v1.5-Aligned-Giant</div>
 
       {/* 3D BASE OFFSET */}
-      <div className="absolute inset-0 pointer-events-none"
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none"
            style={{ 
-             transform: `rotateX(62deg) translateY(${config.logoYOffset || -100}px)`,
+             transform: `rotateX(62deg) translateY(${config.logoYOffset || -350}px)`,
              transformStyle: 'preserve-3d'
            }}>
         
-        {/* Home Team Logo - Negative Offset for Extreme Space */}
-        <div className="absolute left-[-15%] top-1/2 -translate-y-1/2 w-[650px] h-[650px] flex items-center justify-center">
-          <img src={config.teamA.logo} 
-               alt={config.teamA.name} 
-               className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
-        </div>
+        {/* LOGO ROW: Flex with massive gap to ensure perfect separation */}
+        <div className="flex items-center justify-center gap-[600px] w-full">
+          {/* Home Team Logo */}
+          <div className="w-[600px] h-[600px] flex items-center justify-center">
+            <img src={config.teamA.logo} 
+                 alt={config.teamA.name} 
+                 className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+          </div>
 
-        {/* Tournament Logo - Center */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-auto flex items-center justify-center">
-          {config.centerLogo && (
-            <img src={config.centerLogo} 
-                 alt="Tournament" 
-                 className="w-full h-auto object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
-          )}
-        </div>
+          {/* Tournament Logo Center */}
+          <div className="w-[800px] h-auto flex items-center justify-center">
+            {config.centerLogo && (
+              <img src={config.centerLogo} 
+                   alt="Tournament" 
+                   className="w-full h-auto object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+            )}
+          </div>
 
-        {/* Away Team Logo - Negative Offset for Extreme Space */}
-        <div className="absolute right-[-15%] top-1/2 -translate-y-1/2 w-[650px] h-[650px] flex items-center justify-center">
-          <img src={config.teamB.logo} 
-               alt={config.teamB.name} 
-               className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+          {/* Away Team Logo */}
+          <div className="w-[600px] h-[600px] flex items-center justify-center">
+            <img src={config.teamB.logo} 
+                 alt={config.teamB.name} 
+                 className="w-full h-full object-contain mix-blend-multiply opacity-95 filter saturate-[0.85] contrast-[1.1] drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" />
+          </div>
         </div>
       </div>
 
@@ -72,7 +75,7 @@ export function FieldOverlay() {
             { color: '#000000', border: 'border border-white/20' } // Nike Black
           ].map((style, idx) => (
             <div key={idx} 
-                 className={`w-[450px] h-[120px] flex items-center justify-center overflow-hidden ${style.border || ''} shadow-2xl opacity-100`}
+                 className={`w-[320px] h-[90px] flex items-center justify-center overflow-hidden ${style.border || ''} shadow-2xl opacity-100`}
                  style={{ backgroundColor: style.color }}>
               {config.brandingLogos?.[idx]?.url && (
                 <img src={config.brandingLogos[idx].url} 

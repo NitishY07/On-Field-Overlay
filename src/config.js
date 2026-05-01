@@ -32,6 +32,6 @@ export const matchConfig = {
     { url: "/nike.svg", name: "Nike" }
   ],
   brandingText: "Where Champions Are Crowned",
-  logoYOffset: -400,
-  sponsorYOffset: 450
+  logoYOffset: -350,
+  sponsorYOffset: 300
 }
